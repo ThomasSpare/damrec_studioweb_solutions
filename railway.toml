@@ -1,0 +1,11 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "cd studio-web-solutions && npm ci && npm run build"
+watchPatterns = ["studio-web-solutions/**"]
+
+[deploy]
+startCommand = "cd studio-web-solutions && npm start"
+restartPolicyType = "ON_FAILURE"
+
+[build.env]
+NODE_ENV = "production"
