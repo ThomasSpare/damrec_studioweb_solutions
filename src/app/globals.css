@@ -1,26 +1,73 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  body {
+    @apply bg-brand-deep text-brand-light leading-relaxed;
+    font-feature-settings: "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .hero-gradient {
+    background: linear-gradient(
+      135deg,
+      #160f30 0%,
+      #241663 50%,
+      #457affff 100%
+    );
+  }
+
+  .btn {
+    @apply px-8 py-4 border-none rounded-full font-semibold text-center transition-all duration-300 cursor-pointer inline-block;
+  }
+
+  .btn:hover {
+    @apply -translate-y-0.5 shadow-lg;
+  }
+
+  .btn-primary {
+    background: linear-gradient(45deg, #457affff, #241663);
+    @apply text-white shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply bg-white/20 text-white border-2 border-brand-light/40 backdrop-blur-sm;
+  }
+
+  .service-card {
+    @apply bg-brand-primary/20 backdrop-blur-sm p-8 rounded-3xl shadow-xl transition-all duration-300 border border-brand-accent/20;
+  }
+
+  .service-card:hover {
+    @apply -translate-y-2 shadow-2xl bg-brand-primary/30 border-brand-accent/40;
+  }
+
+  .service-icon {
+    @apply w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-2xl text-brand-light;
+    background: linear-gradient(45deg, #241663, #457affff);
+  }
 }
