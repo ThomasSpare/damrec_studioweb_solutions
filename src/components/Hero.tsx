@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
+
 export default function Hero() {
   // Array of images to cycle through
   const images = [
