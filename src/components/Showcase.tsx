@@ -52,13 +52,13 @@ export default function Showcase() {
             </div>
             
             <div className="flex gap-4 flex-wrap">
-              {/* <Link 
-                href="" 
+              <Link 
+                href="https://skribble.website" 
                 target="_blank"
                 className="btn btn-primary"
               >
-                View Live Platform
-              </Link> */}
+                Skribble Website
+              </Link>
               <Link href="#contact" className="btn btn-secondary bg-brand-accent/20 text-brand-light border-brand-accent/40 hover:bg-brand-accent/30">
                 Discuss Your Project
               </Link>
