@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { insertPageView, insertSession, updateSession } from '@/lib/database'
+import { insertPageView, insertSession, updateSession, initializeDatabase } from '@/lib/database-pg'
 import { 
   getDeviceType, 
   getBrowser, 
@@ -10,6 +10,9 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
+    // Initialize database on first request
+    await initializeDatabase()
+    
     const body = await request.json()
     const { path, referrer, sessionId, screenResolution } = body
     
@@ -22,7 +25,7 @@ export async function POST(request: NextRequest) {
     const os = getOS(userAgent)
     
     // Get location (with error handling for rate limits)
-    let location = { country: undefined, city: undefined }
+    let location: { country?: string; city?: string } = {}
     if (ip !== '127.0.0.1' && ip !== '::1') {
       try {
         location = await getLocationFromIP(ip)
@@ -39,14 +42,14 @@ export async function POST(request: NextRequest) {
       finalSessionId = Math.random().toString(36).substring(2) + Date.now().toString(36)
       
       // Insert new session
-      insertSession.run(finalSessionId, 1, ip, userAgent)
+      await insertSession(finalSessionId, 1, ip, userAgent)
     } else {
       // Update existing session
-      updateSession.run(sessionId)
+      await updateSession(sessionId)
     }
     
     // Insert page view
-    insertPageView.run(
+    await insertPageView(
       path,
       referrer || null,
       userAgent,
@@ -58,7 +61,7 @@ export async function POST(request: NextRequest) {
       os,
       screenResolution || null,
       finalSessionId,
-      isNewSession ? 1 : 0
+      isNewSession
     )
     
     return NextResponse.json({ 

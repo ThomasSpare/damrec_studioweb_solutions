@@ -5,17 +5,21 @@ import {
   getTopPages, 
   getBrowserStats, 
   getDeviceStats, 
-  getReferrerStats 
-} from '@/lib/database'
+  getReferrerStats,
+  initializeDatabase
+} from '@/lib/database-pg'
 
 export async function GET() {
   try {
-    const dailyStats = getDailyStats.all()
-    const countryStats = getCountryStats.all()
-    const topPages = getTopPages.all()
-    const browserStats = getBrowserStats.all()
-    const deviceStats = getDeviceStats.all()
-    const referrerStats = getReferrerStats.all()
+    // Initialize database on first request
+    await initializeDatabase()
+    
+    const dailyStats = await getDailyStats()
+    const countryStats = await getCountryStats()
+    const topPages = await getTopPages()
+    const browserStats = await getBrowserStats()
+    const deviceStats = await getDeviceStats()
+    const referrerStats = await getReferrerStats()
 
     // Calculate totals
     const totalPageViews = dailyStats.reduce((sum: number, day: any) => sum + day.page_views, 0)
