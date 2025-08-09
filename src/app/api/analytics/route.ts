@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { insertPageView, insertSession, updateSession, initializeDatabase } from '@/lib/database-pg'
+import { executeWithFallback, isDatabaseConfigured } from '@/lib/database-fallback'
 import { 
   getDeviceType, 
   getBrowser, 
@@ -10,11 +11,22 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
-    // Initialize database on first request
-    await initializeDatabase()
-    
     const body = await request.json()
     const { path, referrer, sessionId, screenResolution } = body
+    
+    // If database not configured, just return success
+    if (!isDatabaseConfigured()) {
+      return NextResponse.json({ 
+        success: true, 
+        sessionId: sessionId || 'fallback' 
+      })
+    }
+    
+    // Initialize database on first request
+    await executeWithFallback(
+      () => initializeDatabase(),
+      undefined
+    )
     
     const userAgent = request.headers.get('user-agent') || ''
     const ip = getClientIP(request)
@@ -41,27 +53,36 @@ export async function POST(request: NextRequest) {
     if (isNewSession) {
       finalSessionId = Math.random().toString(36).substring(2) + Date.now().toString(36)
       
-      // Insert new session
-      await insertSession(finalSessionId, 1, ip, userAgent)
+      // Insert new session with fallback handling
+      await executeWithFallback(
+        () => insertSession(finalSessionId, 1, ip, userAgent),
+        undefined
+      )
     } else {
-      // Update existing session
-      await updateSession(sessionId)
+      // Update existing session with fallback handling
+      await executeWithFallback(
+        () => updateSession(sessionId),
+        undefined
+      )
     }
     
-    // Insert page view
-    await insertPageView(
-      path,
-      referrer || null,
-      userAgent,
-      ip,
-      location.country || null,
-      location.city || null,
-      deviceType,
-      browser,
-      os,
-      screenResolution || null,
-      finalSessionId,
-      isNewSession
+    // Insert page view with fallback handling
+    await executeWithFallback(
+      () => insertPageView(
+        path,
+        referrer || null,
+        userAgent,
+        ip,
+        location.country || null,
+        location.city || null,
+        deviceType,
+        browser,
+        os,
+        screenResolution || null,
+        finalSessionId,
+        isNewSession
+      ),
+      undefined
     )
     
     return NextResponse.json({ 

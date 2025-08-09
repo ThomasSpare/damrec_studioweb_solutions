@@ -1,16 +1,26 @@
 import { Pool, PoolClient } from 'pg'
 
-// Create a connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-})
+// Create a connection pool only if DATABASE_URL is provided
+let pool: Pool | null = null
+
+if (process.env.DATABASE_URL) {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  })
+} else {
+  console.warn('DATABASE_URL not found. Analytics features will be disabled.')
+}
 
 // Initialize database tables
 export async function initializeDatabase() {
+  if (!pool) {
+    throw new Error('Database not configured')
+  }
+  
   const client = await pool.connect()
   
   try {
@@ -51,6 +61,7 @@ export async function initializeDatabase() {
     console.log('Database initialized successfully')
   } catch (error) {
     console.error('Database initialization failed:', error)
+    throw error
   } finally {
     client.release()
   }
@@ -70,6 +81,7 @@ export async function insertPageView(
   sessionId: string,
   isUniqueVisitor: boolean
 ) {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {

@@ -8,18 +8,45 @@ import {
   getReferrerStats,
   initializeDatabase
 } from '@/lib/database-pg'
+import { executeWithFallback, fallbackAnalytics, isDatabaseConfigured } from '@/lib/database-fallback'
 
 export async function GET() {
   try {
-    // Initialize database on first request
-    await initializeDatabase()
+    // If database not configured, return fallback data
+    if (!isDatabaseConfigured()) {
+      return NextResponse.json(fallbackAnalytics)
+    }
     
-    const dailyStats = await getDailyStats()
-    const countryStats = await getCountryStats()
-    const topPages = await getTopPages()
-    const browserStats = await getBrowserStats()
-    const deviceStats = await getDeviceStats()
-    const referrerStats = await getReferrerStats()
+    // Initialize database on first request with fallback
+    await executeWithFallback(
+      () => initializeDatabase(),
+      undefined
+    )
+    
+    const dailyStats = await executeWithFallback(
+      () => getDailyStats(),
+      []
+    )
+    const countryStats = await executeWithFallback(
+      () => getCountryStats(),
+      []
+    )
+    const topPages = await executeWithFallback(
+      () => getTopPages(),
+      []
+    )
+    const browserStats = await executeWithFallback(
+      () => getBrowserStats(),
+      []
+    )
+    const deviceStats = await executeWithFallback(
+      () => getDeviceStats(),
+      []
+    )
+    const referrerStats = await executeWithFallback(
+      () => getReferrerStats(),
+      []
+    )
 
     // Calculate totals
     const totalPageViews = dailyStats.reduce((sum: number, day: any) => sum + day.page_views, 0)
