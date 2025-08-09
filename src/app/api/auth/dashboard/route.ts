@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 
+// Force this route to be dynamic (not prerendered at build time)
+export const dynamic = 'force-dynamic'
+
 const DASHBOARD_PASSWORD_HASH = '$2b$12$TlFMfoiLTEIg7wPBKvEf5u9B8IVHhwIShiLjihztC2F9rq7QQp0La' // zmakqo0202
 
 export async function POST(request: NextRequest) {

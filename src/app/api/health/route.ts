@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { isDatabaseConfigured } from '@/lib/database-fallback'
 
+// Force this route to be dynamic (not prerendered at build time)
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const dbConfigured = isDatabaseConfigured()
   

@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server'
+
+// Force this route to be dynamic (not prerendered at build time)
+export const dynamic = 'force-dynamic'
 import { 
   getDailyStats, 
   getCountryStats, 

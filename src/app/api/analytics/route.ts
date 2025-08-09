@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+
+// Force this route to be dynamic (not prerendered at build time)
+export const dynamic = 'force-dynamic'
 import { insertPageView, insertSession, updateSession, initializeDatabase } from '@/lib/database-pg'
 import { executeWithFallback, isDatabaseConfigured } from '@/lib/database-fallback'
 import { 
