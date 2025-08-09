@@ -100,6 +100,7 @@ export async function insertPageView(
 }
 
 export async function insertSession(sessionId: string, pageCount: number, ipAddress: string, userAgent: string) {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {
@@ -116,6 +117,7 @@ export async function insertSession(sessionId: string, pageCount: number, ipAddr
 }
 
 export async function updateSession(sessionId: string) {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {
@@ -130,6 +132,7 @@ export async function updateSession(sessionId: string) {
 }
 
 export async function getDailyStats() {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {
@@ -151,6 +154,7 @@ export async function getDailyStats() {
 }
 
 export async function getCountryStats() {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {
@@ -173,6 +177,7 @@ export async function getCountryStats() {
 }
 
 export async function getTopPages() {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {
@@ -195,6 +200,7 @@ export async function getTopPages() {
 }
 
 export async function getBrowserStats() {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {
@@ -217,6 +223,7 @@ export async function getBrowserStats() {
 }
 
 export async function getDeviceStats() {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {
@@ -238,6 +245,7 @@ export async function getDeviceStats() {
 }
 
 export async function getReferrerStats() {
+  if (!pool) throw new Error('Database not configured')
   const client = await pool.connect()
   
   try {
