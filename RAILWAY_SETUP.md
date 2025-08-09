@@ -1,17 +1,25 @@
 # Railway Deployment Setup
 
-## Step 1: Add PostgreSQL Database
+## IMPORTANT: You MUST add PostgreSQL database first!
 
-1. Go to your Railway dashboard
-2. Click on your project
+### Step 1: Add PostgreSQL Database BEFORE deploying
+
+1. Go to your Railway dashboard: https://railway.app/dashboard
+2. Click on your project (or create new project)
 3. Click "New" → "Database" → "Add PostgreSQL"
-4. Railway will automatically create the database and set the `DATABASE_URL` environment variable
+4. Wait for PostgreSQL to deploy (this creates the `DATABASE_URL` automatically)
 
-## Step 2: Deploy
+### Step 2: Connect and Deploy
 
-1. Push your code to GitHub
-2. Connect your GitHub repo to Railway
-3. Railway will automatically build and deploy your app
+1. Connect your GitHub repository to Railway
+2. Railway will automatically detect Next.js and build
+3. The app will start once PostgreSQL is connected
+
+### Step 3: Verify Database Connection
+
+Check your Railway logs - you should see:
+- ✅ `Database initialized successfully` 
+- ❌ NOT `DATABASE_URL not found`
 
 ## Step 3: Verify
 
