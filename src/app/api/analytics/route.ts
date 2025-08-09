@@ -14,8 +14,15 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { path, referrer, sessionId, screenResolution } = body
     
+    console.log('📊 Analytics API: Received tracking request', {
+      path,
+      sessionId: sessionId === 'new' ? 'NEW SESSION' : sessionId,
+      hasReferrer: !!referrer
+    })
+    
     // If database not configured, just return success
     if (!isDatabaseConfigured()) {
+      console.log('📊 Analytics API: Database not configured, using fallback')
       return NextResponse.json({ 
         success: true, 
         sessionId: sessionId || 'fallback' 
@@ -84,6 +91,12 @@ export async function POST(request: NextRequest) {
       ),
       undefined
     )
+    
+    console.log('📊 Analytics API: Successfully tracked page view', {
+      sessionId: finalSessionId,
+      isNewSession,
+      path
+    })
     
     return NextResponse.json({ 
       success: true, 
