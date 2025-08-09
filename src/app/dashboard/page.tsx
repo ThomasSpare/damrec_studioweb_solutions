@@ -177,7 +177,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-brand-light/80">Total Page Views</h3>
-                  <p className="text-3xl font-bold text-brand-light">{data.summary.totalPageViews.toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-brand-light">{(data.summary.totalPageViews || 0).toLocaleString()}</p>
                 </div>
               </div>
               <p className="text-sm text-brand-light/60">Last 30 days</p>
@@ -189,7 +189,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-brand-light/80">Unique Visitors</h3>
-                  <p className="text-3xl font-bold text-brand-light">{data.summary.totalUniqueVisitors.toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-brand-light">{(data.summary.totalUniqueVisitors || 0).toLocaleString()}</p>
                 </div>
               </div>
               <p className="text-sm text-brand-light/60">Last 30 days</p>
@@ -201,7 +201,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-brand-light/80">Avg Daily Views</h3>
-                  <p className="text-3xl font-bold text-brand-light">{data.summary.avgDailyViews.toLocaleString()}</p>
+                  <p className="text-3xl font-bold text-brand-light">{(data.summary.avgDailyViews || 0).toLocaleString()}</p>
                 </div>
               </div>
               <p className="text-sm text-brand-light/60">Last 30 days</p>
@@ -213,7 +213,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold mb-4 text-brand-light">Daily Traffic</h2>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data.dailyStats}>
+              <LineChart data={data.dailyStats || []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(234, 231, 175, 0.1)" />
                 <XAxis 
                   dataKey="date" 
@@ -256,7 +256,7 @@ export default function Dashboard() {
             <div className="service-card">
               <h2 className="text-xl font-semibold mb-4 text-brand-light">Top Countries</h2>
               <div className="space-y-3">
-                {data.countryStats.slice(0, 10).map((country, index) => (
+                {(data.countryStats || []).slice(0, 10).map((country, index) => (
                   <div key={country.country} className="flex justify-between items-center">
                     <span className="text-sm font-medium text-brand-light">{country.country}</span>
                     <div className="flex items-center space-x-2">
@@ -264,7 +264,7 @@ export default function Dashboard() {
                       <div 
                         className="bg-brand-accent h-2 rounded"
                         style={{ 
-                          width: `${(country.visits / data.countryStats[0]?.visits * 100) || 0}px`,
+                          width: `${(country.visits / (data.countryStats?.[0]?.visits || 1) * 100) || 0}px`,
                           minWidth: '4px'
                         }}
                       />
@@ -281,7 +281,7 @@ export default function Dashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={data.deviceStats}
+                    data={data.deviceStats || []}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -292,7 +292,7 @@ export default function Dashboard() {
                     fill="#8884d8"
                     dataKey="visits"
                   >
-                    {data.deviceStats.map((entry, index) => (
+                    {(data.deviceStats || []).map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -318,7 +318,7 @@ export default function Dashboard() {
             <div className="service-card">
               <h2 className="text-xl font-semibold mb-4 text-brand-light">Top Pages</h2>
               <div className="space-y-3">
-                {data.topPages.slice(0, 8).map((page) => (
+                {(data.topPages || []).slice(0, 8).map((page) => (
                   <div key={page.path} className="flex justify-between items-center">
                     <span className="text-sm font-medium truncate max-w-xs text-brand-light">{page.path}</span>
                     <span className="text-sm text-brand-light/70">{page.views} views</span>
@@ -332,7 +332,7 @@ export default function Dashboard() {
               <h2 className="text-xl font-semibold mb-4 text-brand-light">Traffic Sources</h2>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.referrerStats} layout="horizontal">
+                <BarChart data={data.referrerStats || []} layout="horizontal">
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(234, 231, 175, 0.1)" />
                   <XAxis type="number" tick={{ fill: '#EAE7AF', fontSize: 12 }} />
                   <YAxis 

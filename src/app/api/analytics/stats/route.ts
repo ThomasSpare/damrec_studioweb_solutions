@@ -48,9 +48,11 @@ export async function GET() {
       []
     )
 
-    // Calculate totals
-    const totalPageViews = dailyStats.reduce((sum: number, day: any) => sum + day.page_views, 0)
-    const totalUniqueVisitors = Math.max(...dailyStats.map((day: any) => day.unique_visitors))
+    // Calculate totals with null safety
+    const totalPageViews = dailyStats.reduce((sum: number, day: any) => sum + (day.page_views || 0), 0)
+    const totalUniqueVisitors = dailyStats.length > 0 
+      ? Math.max(...dailyStats.map((day: any) => day.unique_visitors || 0))
+      : 0
 
     return NextResponse.json({
       summary: {
